@@ -60,13 +60,16 @@ On linux platforms, simply running cmake with your generator of choice will prod
 
 ### Faust => Cmajor
 
-The Faust => Cmajor hackish integration allows to use Faust .dsp files in a Cmajor patch, to be compiled on the fly in .cmajor files using the Faust to Cmajor backend. Look at `examples/FaustCmajor` for an example.
+The Faust => Cmajor hackish integration allows to use Faust .dsp files in a Cmajor patch, to be compiled on the fly in .cmajor files using the Faust to Cmajor backend. Look at `examples/patches/FaustCmajor` for an example.
 
 Added files:
 
 - `/3rdParty/faust/libfaust.a` (statically compiled Faust 2.72.7 only containing the Cmajor backend)
 - `include/cmajor/helpers/export.h` and `include/cmajor/helpers/libfaust-box-c.h` header files
-- `examples/FaustCmajor` with a Faust/Cmajor hybrid project containing `addSynth.dsp` and `stereoEcho.dsp` Faust files and `test.cmajor` Cmajor file
+- `examples/patches/FaustCmajor` with a Faust/Cmajor hybrid project containing `addSynth.dsp` and `stereoEcho.dsp` Faust files and `test.cmajor` Cmajor file
+
+The compiled `cmaj` binary can be copied in `~/.vscode/extensions`, in a sub-directory called `cmajorsoftware.cmajor-tools-xxxxx`, to be used with VSCode.
+
 ----
 
 All content is copyright 2023 [Cmajor Software Ltd](https://cmajor.dev) unless marked otherwise.
