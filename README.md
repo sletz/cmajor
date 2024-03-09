@@ -74,7 +74,7 @@ The compiled `cmaj` binary can be copied in `~/.vscode/extensions`, in a sub-dir
 
 Coding convention have to be known when using Faust code in a Cmajor program:
 
-- each Faust DSP file will be compiled as a `processor`, which name will be the DSP filename itself. So a `foo.dsp` file will be compiled as `processor foo {...}` block of code.
+- each Faust DSP file will be compiled as a `processor` inside the `namespace faust {...}`, which name will be the DSP filename itself. So a `foo.dsp` file will be compiled as `processor foo {...}` block of code.
 - labels used in button, sliders, nentries... will be compiled as input events, to be used in the graph. So a `hslider("freq", 200, 200, 1000, 0.1)` will be converted as a `event freq ....` line of Cmajor code. 
 - audio inputs/outputs in the Faust processor are generated as `input0/input1...inputN` and `output0/output1...outputN`.
 
@@ -113,18 +113,18 @@ Cmajor connection graph:
 connection 
 {
     // Connect to Faust addSynth
-    volume -> addSynth.volume;
-    freq -> addSynth.freq;
+    volume -> faust::addSynth.volume;
+    freq -> faust::addSynth.freq;
 
     // Connect to Faust stereoEcho
-    feedback -> stereoEcho.feedback;
-    gain -> stereoEcho.gain;
+    feedback -> faust::stereoEcho.feedback;
+    gain -> faust::stereoEcho.gain;
 
-    addSynth.output0 -> stereoEcho.input0;
-    ClassicRingtone.out -> stereoEcho.input1;
+    faust::addSynth.output0 -> faust::stereoEcho.input0;
+    ClassicRingtone.out -> faust::stereoEcho.input1;
 
-    stereoEcho.output0 -> audioOut0;
-    stereoEcho.output1 -> audioOut1;
+    faust::stereoEcho.output0 -> audioOut0;
+    faust::stereoEcho.output1 -> audioOut1;
 }
 ```
 ----
