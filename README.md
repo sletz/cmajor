@@ -58,6 +58,13 @@ On linux platforms, simply running cmake with your generator of choice will prod
 > ninja
 ```
 
+### Faust => Cmajor
+
+Added files:
+
+- `/3rdParty/faust/libfaust.a` (statically compiled Faust 2.72.7 only containing the Cmajor backend)
+- `include/cmajor/helpers/export.h` and `include/cmajor/helpers/libfaust-box-c.h` header files
+- `examples/FaustCmajor` with a Faust/Cmajor hybrid project containing `addSynth.dsp` and `stereoEcho.dsp` Faust files and `test.cmajor` Cmajor file
 ----
 
 All content is copyright 2023 [Cmajor Software Ltd](https://cmajor.dev) unless marked otherwise.

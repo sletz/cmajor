@@ -487,6 +487,43 @@ inline bool PatchManifest::reload()
     throw std::runtime_error ("The patch file did not contain a valid JSON object");
 }
 
+// Faust => Cmajor hack
+    
+#include "libfaust-box-c.h"
+
+inline bool endWith(const std::string& str, const std::string& suffix)
+{
+    size_t i = str.rfind(suffix);
+    return (i != std::string::npos) && (i == (str.length() - suffix.length()));
+}
+    
+inline std::string faust2Cmajor(const std::string& name, const std::string& file)
+{
+    createLibContext();
+    {
+        char error_msg[4096];
+        std::string cmajor_source;
+        const char* argv[] = { "-cn", name.c_str() };
+    
+        // Create the box
+        int inputs = 0;
+        int outputs = 0;
+        Box box = CDSPToBoxes("FaustDSP", file.c_str(), 2, argv, &inputs, &outputs, error_msg);
+        if (!box) {
+            std::cerr << error_msg;
+            goto end;
+        }
+        
+        // Compile it to Cmajor
+        cmajor_source = CcreateSourceFromBoxes("FaustDSP", box, "cmajor-hybrid", 2, argv, error_msg);
+        std::cout << "CMajor: " << cmajor_source << std::endl;
+    
+  end:
+        destroyLibContext();
+        return cmajor_source;
+    }
+}
+    
 inline std::optional<std::string> PatchManifest::readFileContent (const std::string& file) const
 {
     if (auto stream = createFileReader (file))
@@ -501,9 +538,13 @@ inline std::optional<std::string> PatchManifest::readFileContent (const std::str
                 std::string result;
                 result.resize (static_cast<std::string::size_type> (fileSize));
                 stream->seekg (0);
-
-                if (stream->read (reinterpret_cast<std::ifstream::char_type*> (result.data()), static_cast<std::streamsize> (fileSize)))
-                    return result;
+                if (stream->read (reinterpret_cast<std::ifstream::char_type*> (result.data()), static_cast<std::streamsize> (fileSize))) {
+                    if (endWith(file, ".dsp")) {
+                        return faust2Cmajor(file.substr(0, file.find('.')), result);
+                    } else {
+                        return result;
+                    }
+                }
             }
         }
         catch (...) {}
