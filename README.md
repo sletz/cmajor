@@ -70,6 +70,63 @@ Added files:
 
 The compiled `cmaj` binary can be copied in `~/.vscode/extensions`, in a sub-directory called `cmajorsoftware.cmajor-tools-xxxxx`, to be used with VSCode.
 
+#### Using Faust code in Cmajor
+
+Coding convention have to be known when using Faust code in a Cmajor program:
+
+- each Faust DSP file will be compiled as a `processor`, which name will be the DSP filename itself. So a `foo.dsp` file will be compiled as `processor foo {...}` block of code.
+- labels used in button, sliders, nentries... will be compiled as input events, to be used in the graph. So a `hslider("freq", 200, 200, 1000, 0.1)` will be converted as a `event freq ....` line of Cmajor code. 
+- audio inputs/outputs in the Faust processor are generated as `input0/input1...inputN` and `output0/output1...outputN`.
+
+Here is a block of connection code combining an `addSynth` and `stereoEcho`processors compiled from Faust DSP `addSynth.dsp` and `stereoEcho.dsp` files with a Cmajor coded `ClassicRingtone` processor.
+
+File addSynth.dsp:
+
+```
+import("stdfaust.lib");
+
+vol = hslider("volume [unit:dB]", -20, -96, 0, 0.1) : ba.db2linear : si.smoo;
+freq = hslider("freq [unit:Hz]", 500, 100, 2000, 1);
+
+process = vgroup("addSynth", (os.osc(freq) + 0.5*os.osc(2.*freq) + 0.25*os.osc(3.*freq)) * vol);
+```
+
+File stereoEcho.dsp:
+```
+import("stdfaust.lib");
+    
+gain = hslider("gain", 0.5, 0, 1, 0.01);
+feedback = hslider("feedback", 0.8, 0, 1, 0.01);
+ 
+echo(del_sec, fb, g) = + ~ de.delay(50000, del_samples) * fb * g
+with {
+    del_samples = del_sec*ma.SR;
+};
+
+process = echo(1.6, 0.6, 0.7), echo(0.7, feedback, gain);
+
+```
+
+Cmajor connection graph:
+
+```
+connection 
+{
+    // Connect to Faust addSynth
+    volume -> addSynth.volume;
+    freq -> addSynth.freq;
+
+    // Connect to Faust stereoEcho
+    feedback -> stereoEcho.feedback;
+    gain -> stereoEcho.gain;
+
+    addSynth.output0 -> stereoEcho.input0;
+    ClassicRingtone.out -> stereoEcho.input1;
+
+    stereoEcho.output0 -> audioOut0;
+    stereoEcho.output1 -> audioOut1;
+}
+```
 ----
 
 All content is copyright 2023 [Cmajor Software Ltd](https://cmajor.dev) unless marked otherwise.
