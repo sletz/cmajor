@@ -162,9 +162,11 @@ function (MAKE_CMAJ_LIBRARY)
         )
     endif()
 
+    set (FAUST_LIBS
+          faust )
 
     set (LLVM_LIBS
-
+  
         LLVMWindowsManifest
         LLVMWindowsDriver
         LLVMXRay
@@ -387,12 +389,14 @@ function (MAKE_CMAJ_LIBRARY)
     target_link_directories (${CMAJ_LIBRARY_NAME}
         PUBLIC
             ${LLVM_PATH_ROOT}/${LLVM_LIBRARY_DIR}
+            ${CMAJ_MODULE_DIR}/../3rdParty/faust
     )
 
     target_link_libraries (${CMAJ_LIBRARY_NAME}
         PRIVATE
             ${LLVM_LIBS}
             ${LLVM_EXTRA_LIBS}
+            ${FAUST_LIBS}
     )
 
     if (CMAJ_INCLUDE_SCRIPTING)
