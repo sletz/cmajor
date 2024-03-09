@@ -59,17 +59,17 @@ graph sequence [[main]]
     connection 
     {
         // Connect to Faust addSynth
-        volume -> addSynth.volume;
-        freq -> addSynth.freq;
+        volume -> faust::addSynth.volume;
+        freq -> faust::addSynth.freq;
 
         // Connect to Faust stereoEcho
-        feedback -> stereoEcho.feedback;
-        gain -> stereoEcho.gain;
+        feedback -> faust::stereoEcho.feedback;
+        gain -> faust::stereoEcho.gain;
 
-        addSynth.output0 -> stereoEcho.input0;
-        ClassicRingtone.out -> stereoEcho.input1;
+        faust::addSynth.output0 -> faust::stereoEcho.input0;
+        ClassicRingtone.out -> faust::stereoEcho.input1;
 
-        stereoEcho.output0 -> audioOut0;
-        stereoEcho.output1 -> audioOut1;
+        faust::stereoEcho.output0 -> audioOut0;
+        faust::stereoEcho.output1 -> audioOut1;
     }
 }
