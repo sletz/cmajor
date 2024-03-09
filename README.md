@@ -60,6 +60,8 @@ On linux platforms, simply running cmake with your generator of choice will prod
 
 ### Faust => Cmajor
 
+The Faust => Cmajor hackish integration allows to use Faust .dsp files in a Cmajor patch, to be compiled on the fly in .cmajor files using the Faust to Cmajor backend. Look at `examples/FaustCmajor` for an example.
+
 Added files:
 
 - `/3rdParty/faust/libfaust.a` (statically compiled Faust 2.72.7 only containing the Cmajor backend)
