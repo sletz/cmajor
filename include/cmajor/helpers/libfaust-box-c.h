@@ -25,7 +25,7 @@
 #ifndef LIBFAUSTCOMMON_C_H
 #define LIBFAUSTCOMMON_C_H
 
-#include "faust/export.h"
+#include "export.h"
 
 /*!
  \addtogroup boxc C interface for the Box API.
