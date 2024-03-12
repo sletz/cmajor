@@ -1,0 +1,16 @@
+{
+    "CmajorVersion": 1,
+    "ID": "grame.cmajor.FaustCmajorPoly",
+    "version": "1.0",
+    "name": "FaustCmajorPoly",
+    "description": "Cmajor example",
+    "category": "synth",
+    "manufacturer": "GRAME",
+    "website": "https://faust.grame.fr",
+    "isInstrument": true,
+    "source": [
+        "poly-dsp-effect.cmajor",
+        "voice.dsp",
+        "effect.dsp"
+    ]
+}
