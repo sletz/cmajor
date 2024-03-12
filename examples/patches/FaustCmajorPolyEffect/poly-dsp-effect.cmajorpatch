@@ -1,8 +1,8 @@
 {
     "CmajorVersion": 1,
-    "ID": "grame.cmajor.FaustCmajorPoly",
+    "ID": "grame.cmajor.FaustCmajorPolyEffect",
     "version": "1.0",
-    "name": "FaustCmajorPoly",
+    "name": "FaustCmajorPolyEffect",
     "description": "Cmajor example",
     "category": "synth",
     "manufacturer": "GRAME",
