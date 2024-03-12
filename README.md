@@ -67,6 +67,8 @@ Added files:
 - `/3rdParty/faust/libfaust.a` (statically compiled Faust 2.72.7 only containing the Cmajor backend)
 - `include/cmajor/helpers/export.h` and `include/cmajor/helpers/libfaust-box-c.h` header files
 - `examples/patches/FaustCmajor` with a Faust/Cmajor hybrid project containing `addSynth.dsp` and `stereoEcho.dsp` Faust files and `test.cmajor` Cmajor file
+- `examples/patches/FaustCmajorPoly` with a Faust/Cmajor hybrid project containing the `voice.dsp` Faust file that describes the voice code to be compiled in Cmajor, then wrapped with Cmajor written polyphony + MIDI code in the `poly-dsp.cmajor` Cmajor file.
+- `examples/patches/FaustCmajorPolyEffect` with a Faust/Cmajor hybrid project containing the `voice.dsp` Faust file that describes the voice code, `effect.dsp` for the global effect, to be compiled in Cmajor then wrapped with Cmajor written polyphony + MIDI code in `poly-dsp-effect.cmajor` Cmajor file.
 
 The compiled `cmaj` binary can be copied in `~/.vscode/extensions`, in a sub-directory called `cmajorsoftware.cmajor-tools-xxxxx`, to be used with VSCode.
 
