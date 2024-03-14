@@ -44,6 +44,14 @@ graph dsp_voice
                  std::notes::NoteOff,
                  std::notes::PitchBend) eventIn;
     
+    // This depends of the actual Faust voice (clarinet_ui_MIDI here), how to code this section in a generic way?
+    input event float32 bend [[ name: "bend", group: "/v:elecGuitar/h:midi/bend", min: -2.0f, max: 2.0f, init: 0.0f, step: 0.01f, meta_hidden0: "1", meta_midi0: "pitchwheel", meta_style1: "knob" ]];
+    input event float32 envAttack [[ name: "envAttack", group: "/v:clarinet/h:midi/envAttack", min: 0.0f, max: 3e+01f, init: 1.0f, step: 0.01f, meta_style3: "knob" ]];
+    input event float32 reedStiffness [[ name: "reedStiffness", group: "/v:clarinet/h:otherParams/reedStiffness", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_midi2: "ctrl 1", meta_style5: "knob" ]];
+    input event float32 bellOpening [[ name: "bellOpening", group: "/v:clarinet/h:otherParams/bellOpening", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_midi3: "ctrl 3", meta_style6: "knob" ]];
+    input event float32 vibratoFreq [[ name: "vibratoFreq", group: "/v:clarinet/h:otherParams/vibratoFreq", min: 1.0f, max: 1e+01f, init: 5.0f, step: 0.01f, meta_style7: "knob" ]];
+    input event float32 vibratoGain [[ name: "vibratoGain", group: "/v:clarinet/h:otherParams/vibratoGain", min: 0.0f, max: 1.0f, init: 0.25f, step: 0.01f, meta_style8: "knob" ]];
+
     output stream float audioOut0;
     output stream float audioOut1;
 
@@ -54,6 +62,37 @@ graph dsp_voice
         faust::voice.gate <- 1.0f;
     }
      
+     // This depends of the actual Faust voice (clarinet_ui_MIDI here), how to code this section in a generic way?
+    event bend (float32 val)
+    {
+        faust::voice.bend <- val;
+    }
+
+    event envAttack (float32 val)
+    {
+        faust::voice.envAttack <- val;
+    }
+
+    event reedStiffness (float32 val)
+    {
+        faust::voice.reedStiffness <- val;
+    }
+
+    event bellOpening (float32 val)
+    {
+        faust::voice.bellOpening <- val;
+    }
+
+    event vibratoFreq (float32 val)
+    {
+        faust::voice.vibratoFreq <- val;
+    }
+
+    event vibratoGain (float32 val)
+    {
+        faust::voice.vibratoGain <- val;
+    }
+
     event eventIn (std::notes::NoteOff e)
     { 
         faust::voice.gate <- 0.0f;
@@ -77,18 +116,47 @@ graph mydsp_poly_effect [[ main ]]
     input event std::midi::Message midiIn;
     output stream float audioOut0;
     output stream float audioOut1;
-    
+  
+    // This depends of the actual Faust voice (clarinet_ui_MIDI here), how to code this section in a generic way?
+    input event float32 bend [[ name: "bend", group: "/v:elecGuitar/h:midi/bend", min: -2.0f, max: 2.0f, init: 0.0f, step: 0.01f, meta_hidden0: "1", meta_midi0: "pitchwheel", meta_style1: "knob" ]];
+    input event float32 envAttack [[ name: "envAttack", group: "/v:clarinet/h:midi/envAttack", min: 0.0f, max: 3e+01f, init: 1.0f, step: 0.01f, meta_style3: "knob" ]];
+    input event float32 reedStiffness [[ name: "reedStiffness", group: "/v:clarinet/h:otherParams/reedStiffness", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_midi2: "ctrl 1", meta_style5: "knob" ]];
+    input event float32 bellOpening [[ name: "bellOpening", group: "/v:clarinet/h:otherParams/bellOpening", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_midi3: "ctrl 3", meta_style6: "knob" ]];
+    input event float32 vibratoFreq [[ name: "vibratoFreq", group: "/v:clarinet/h:otherParams/vibratoFreq", min: 1.0f, max: 1e+01f, init: 5.0f, step: 0.01f, meta_style7: "knob" ]];
+    input event float32 vibratoGain [[ name: "vibratoGain", group: "/v:clarinet/h:otherParams/vibratoGain", min: 0.0f, max: 1.0f, init: 0.25f, step: 0.01f, meta_style8: "knob" ]];
+
+    input event float32 Damp [[ name: "Damp", group: "/h:Freeverb/v:0x00/Damp", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.025f, meta_style0: "knob", meta_tooltip0: "Somehow control the         density of the reverb." ]];
+    input event float32 RoomSize [[ name: "RoomSize", group: "/h:Freeverb/v:0x00/RoomSize", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.025f, meta_style1: "knob", meta_tooltip1: "The room size         between 0 and 1 with 1 for the largest room." ]];
+    input event float32 Stereo_Spread [[ name: "Stereo Spread", group: "/h:Freeverb/v:0x00/Stereo_Spread", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_style2: "knob", meta_tooltip2: "Spatial         spread between 0 and 1 with 1 for maximum spread." ]];
+    input event float32 Wet [[ name: "Wet", group: "/h:Freeverb/Wet", min: 0.0f, max: 1.0f, init: 0.3333f, step: 0.025f, meta_tooltip3: "The amount of reverb applied to the signal         between 0 and 1 with 1 for the maximum amount of reverb." ]];
+
     node
     {
         midiParser = std::midi::MPEConverter;
-        voices = dsp_voice[16];
-        voiceAllocator = std::voices::VoiceAllocator (16);
+        voices = dsp_voice[32];
+        voiceAllocator = std::voices::VoiceAllocator (32);
     }
       
     connection
     {
-       midiIn -> midiParser -> voiceAllocator -> voices;
-   
+       //midiIn -> midiParser -> voiceAllocator -> voices;
+        midiIn -> midiParser -> voiceAllocator;
+        voiceAllocator.voiceEventOut -> voices.eventIn;
+
+        // This depends of the actual Faust voice (clarinet_ui_MIDI here), how to code this section in a generic way?
+        bend -> voices.bend;
+        envAttack -> voices.envAttack;
+        reedStiffness -> voices.reedStiffness;
+        bellOpening -> voices.bellOpening;
+        vibratoFreq -> voices.vibratoFreq;
+        vibratoGain-> voices.vibratoGain;
+
+        // Global effect parameters
+        Damp -> faust::effect.Damp;
+        RoomSize -> faust::effect.RoomSize;
+        Stereo_Spread -> faust::effect.Stereo_Spread;
+        Wet -> faust::effect.Wet;
+
        // Sum the voices audio out to the effect
         voices.audioOut0 -> faust::effect.input0;
         voices.audioOut1 -> faust::effect.input1;
