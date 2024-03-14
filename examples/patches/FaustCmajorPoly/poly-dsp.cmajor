@@ -127,14 +127,13 @@ graph mydsp_poly [[ main ]]
     node
     {
         midiParser = std::midi::MPEConverter;
-        voices = dsp_voice[16];
-        voiceAllocator = std::voices::VoiceAllocator (16);
+        voices = dsp_voice[32];
+        voiceAllocator = std::voices::VoiceAllocator (32);
     }
      
     connection
     {
         //midiIn -> midiParser -> voiceAllocator -> voices;
-
         midiIn -> midiParser -> voiceAllocator;
         voiceAllocator.voiceEventOut -> voices.eventIn;
 
