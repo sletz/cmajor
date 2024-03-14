@@ -47,9 +47,9 @@ graph dsp_voice
     input event float32 bend [[ name: "bend", group: "/v:elecGuitar/h:midi/bend", min: -2.0f, max: 2.0f, init: 0.0f, step: 0.01f, meta_hidden0: "1", meta_midi0: "pitchwheel", meta_style1: "knob" ]];
     input event float32 envAttack [[ name: "envAttack", group: "/v:clarinet/h:midi/envAttack", min: 0.0f, max: 3e+01f, init: 1.0f, step: 0.01f, meta_style3: "knob" ]];
     input event float32 reedStiffness [[ name: "reedStiffness", group: "/v:clarinet/h:otherParams/reedStiffness", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_midi2: "ctrl 1", meta_style5: "knob" ]];
-	input event float32 bellOpening [[ name: "bellOpening", group: "/v:clarinet/h:otherParams/bellOpening", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_midi3: "ctrl 3", meta_style6: "knob" ]];
-	input event float32 vibratoFreq [[ name: "vibratoFreq", group: "/v:clarinet/h:otherParams/vibratoFreq", min: 1.0f, max: 1e+01f, init: 5.0f, step: 0.01f, meta_style7: "knob" ]];
-	input event float32 vibratoGain [[ name: "vibratoGain", group: "/v:clarinet/h:otherParams/vibratoGain", min: 0.0f, max: 1.0f, init: 0.25f, step: 0.01f, meta_style8: "knob" ]];
+    input event float32 bellOpening [[ name: "bellOpening", group: "/v:clarinet/h:otherParams/bellOpening", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_midi3: "ctrl 3", meta_style6: "knob" ]];
+    input event float32 vibratoFreq [[ name: "vibratoFreq", group: "/v:clarinet/h:otherParams/vibratoFreq", min: 1.0f, max: 1e+01f, init: 5.0f, step: 0.01f, meta_style7: "knob" ]];
+    input event float32 vibratoGain [[ name: "vibratoGain", group: "/v:clarinet/h:otherParams/vibratoGain", min: 0.0f, max: 1.0f, init: 0.25f, step: 0.01f, meta_style8: "knob" ]];
 
     output stream float audioOut0;
     output stream float audioOut1;
@@ -120,9 +120,9 @@ graph mydsp_poly [[ main ]]
     input event float32 bend [[ name: "bend", group: "/v:elecGuitar/h:midi/bend", min: -2.0f, max: 2.0f, init: 0.0f, step: 0.01f, meta_hidden0: "1", meta_midi0: "pitchwheel", meta_style1: "knob" ]];
     input event float32 envAttack [[ name: "envAttack", group: "/v:clarinet/h:midi/envAttack", min: 0.0f, max: 3e+01f, init: 1.0f, step: 0.01f, meta_style3: "knob" ]];
     input event float32 reedStiffness [[ name: "reedStiffness", group: "/v:clarinet/h:otherParams/reedStiffness", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_midi2: "ctrl 1", meta_style5: "knob" ]];
-	input event float32 bellOpening [[ name: "bellOpening", group: "/v:clarinet/h:otherParams/bellOpening", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_midi3: "ctrl 3", meta_style6: "knob" ]];
-	input event float32 vibratoFreq [[ name: "vibratoFreq", group: "/v:clarinet/h:otherParams/vibratoFreq", min: 1.0f, max: 1e+01f, init: 5.0f, step: 0.01f, meta_style7: "knob" ]];
-	input event float32 vibratoGain [[ name: "vibratoGain", group: "/v:clarinet/h:otherParams/vibratoGain", min: 0.0f, max: 1.0f, init: 0.25f, step: 0.01f, meta_style8: "knob" ]];
+    input event float32 bellOpening [[ name: "bellOpening", group: "/v:clarinet/h:otherParams/bellOpening", min: 0.0f, max: 1.0f, init: 0.5f, step: 0.01f, meta_midi3: "ctrl 3", meta_style6: "knob" ]];
+    input event float32 vibratoFreq [[ name: "vibratoFreq", group: "/v:clarinet/h:otherParams/vibratoFreq", min: 1.0f, max: 1e+01f, init: 5.0f, step: 0.01f, meta_style7: "knob" ]];
+    input event float32 vibratoGain [[ name: "vibratoGain", group: "/v:clarinet/h:otherParams/vibratoGain", min: 0.0f, max: 1.0f, init: 0.25f, step: 0.01f, meta_style8: "knob" ]];
 
     node
     {
