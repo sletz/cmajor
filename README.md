@@ -134,7 +134,7 @@ connection
 
 #### Cmajor Faust hybrid file
 
-An "hybrid" Faust/Cmajor file format combining Cmajor and Faust code in a same file can be used: each Faust processor will simply have to be be wrapped with a `faust {...}` block. The corresponding Faust code will be extracted, compiled to Cmajor, than inserted in the original file. When all Faust blocks have been compiled, the final file is simply given to the Cmajor compiler.
+An *hybrid* Faust/Cmajor file format combining Cmajor and Faust code in a same file can be used. Each Faust processor will simply have to be wrapped with a `faust {...}` block. The corresponding Faust code will be extracted, compiled to Cmajor, than inserted in the original file. When all Faust blocks have been compiled, the final file is simply given to the Cmajor compiler.
 
 The following example combines:
 
