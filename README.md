@@ -67,6 +67,7 @@ Added files:
 - `/3rdParty/faust/libfaust.a` (statically compiled Faust 2.72.7 only containing the Cmajor backend)
 - `include/cmajor/helpers/export.h` and `include/cmajor/helpers/libfaust-box-c.h` header files
 - `examples/patches/FaustCmajor` with a Faust/Cmajor hybrid project containing `addSynth.dsp` and `stereoEcho.dsp` Faust files and `test.cmajor` Cmajor file
+- `examples/patches/FaustCmajorHybrid` with a Faust/Cmajor hybrid project containing using a`test.cmajor` Cmajor file combining Faust and Cmajor code in a same file.
 - `examples/patches/FaustCmajorPoly` with a Faust/Cmajor hybrid project containing the `voice.dsp` Faust file that describes the voice code to be compiled in Cmajor, then wrapped with Cmajor written polyphony + MIDI code in the `poly-dsp.cmajor` Cmajor file.
 - `examples/patches/FaustCmajorPolyEffect` with a Faust/Cmajor hybrid project containing the `voice.dsp` Faust file that describes the voice code, `effect.dsp` for the global effect, to be compiled in Cmajor then wrapped with Cmajor written polyphony + MIDI code in `poly-dsp-effect.cmajor` Cmajor file.
 
@@ -79,6 +80,7 @@ Coding conventions have to be known when using Faust code in a Cmajor program:
 - each Faust DSP file will be compiled as a `processor` inside the `namespace faust {...}`, which name will be the DSP filename itself. So a `foo.dsp` file will be compiled as a `processor foo {...}` block of code.
 - labels used in button, sliders, nentries... will be compiled as input events, to be used in the graph. So a `hslider("freq", 200, 200, 1000, 0.1)` will be converted as a `event freq ....` line of Cmajor code. 
 - audio inputs/outputs in the Faust processor are generated as `input0/input1...inputN` and `output0/output1...outputN`.
+- Faust .dsp filed can directly be used, but an "hybrid" [Faust/Cmajor file format](cmajor-caust hybrid file) combining Cmajor and Faust code in a same file can also be used.
 
 Here is a block of connection code combining an `addSynth` and `stereoEcho` processors compiled from Faust DSP `addSynth.dsp` and `stereoEcho.dsp` files with a Cmajor coded `ClassicRingtone` processor.
 
@@ -127,6 +129,86 @@ connection
 
     faust::stereoEcho.output0 -> audioOut0;
     faust::stereoEcho.output1 -> audioOut1;
+}
+```
+
+#### Cmajor Faust hybrid file
+
+An "hybrid" Faust/Cmajor file format combining Cmajor and Faust code in a same file can be used: each Faust processor will simply have to be be wrapped with a `faust {...}` block. The corresponding Faust code will be extracted, compiled to Cmajor, than inserted in the original file. When all Faust blocks have been compiled, the final file is simply given to the Cmajor compiler.
+
+The following example combines:
+
+- an `Osc` Faust block with *freq (using an 'osc_freq' alias)* and *vol* controllers
+- a `Gain` Cmajor processor with a *volume* controller
+- a `Sequence` graph connecting the Faust osc in the Cmajor gain and exposing the three controllers
+
+ ```
+// Faust processors
+
+faust Osc
+{
+    import("stdfaust.lib");
+    freq = hslider("freq [cmajor:osc_freq]", 300, 200, 2000, 0.1);
+    vol = hslider("vol", 0.5, 0, 1, 0.01);
+    process = os.osc(freq) * vol <: (_,_);
+}
+
+faust Reverb
+{
+    import("stdfaust.lib");
+    process = dm.freeverb_demo;
+}
+
+// Cmajor processor
+
+processor Gain
+{
+    input event float volume [[ name: "Gain", min: 0, max: 1, init: 0.1, step: 0.01 ]]; 
+
+    input stream float input0;
+    input stream float input1;
+
+    output stream float output0;
+    output stream float output1;
+  
+    event volume (float val) { vol = val; }
+
+    float vol;
+
+    void main() 
+    {
+        loop {
+            output0 <- input0 * vol;
+            output1 <- input1 * vol;
+            advance();
+        }
+    }
+}
+
+// Cmajor graph
+graph Sequence [[main]]
+{
+    input Osc.osc_freq;
+    input Osc.vol;
+    
+    input Gain.volume;
+
+    output stream float audioOut0;
+    output stream float audioOut1;
+    
+    node Osc = faust::Osc;
+   
+    connection 
+    {   
+        Osc.output0 -> faust::Reverb.input0;
+        Osc.output1 -> faust::Reverb.input1;
+
+        faust::Reverb.output0 -> Gain.input0;
+        faust::Reverb.output1 -> Gain.input1;
+
+        Gain.output0 -> audioOut0;
+        Gain.output1 -> audioOut1;   
+    }
 }
 ```
 ----
