@@ -1,0 +1,69 @@
+
+// Faust processors
+
+faust Osc
+{
+    import("stdfaust.lib");
+    freq = hslider("freq [cmajor:osc_freq]", 300, 200, 2000, 0.1);
+    vol = hslider("vol", 0.5, 0, 1, 0.01);
+    process = os.osc(freq) * vol <: (_,_);
+}
+
+faust Reverb
+{
+    import("stdfaust.lib");
+    process = dm.freeverb_demo;
+}
+
+// Cmajor processor
+
+processor Gain
+{
+    input event float volume [[ name: "Gain", min: 0, max: 1, init: 0.1, step: 0.01 ]]; 
+
+    input stream float input0;
+    input stream float input1;
+
+    output stream float output0;
+    output stream float output1;
+  
+    event volume (float val) { vol = val; }
+
+    float vol;
+
+    void main() 
+    {
+        loop {
+            output0 <- input0 * vol;
+            output1 <- input1 * vol;
+            advance();
+        }
+    }
+}
+
+// Cmajor graph
+
+graph Sequence [[main]]
+{
+    input Osc.osc_freq;
+    input Osc.vol;
+    
+    input Gain.volume;
+
+    output stream float audioOut0;
+    output stream float audioOut1;
+    
+    node Osc = faust::Osc;
+   
+    connection 
+    {   
+        Osc.output0 -> faust::Reverb.input0;
+        Osc.output1 -> faust::Reverb.input1;
+
+        faust::Reverb.output0 -> Gain.input0;
+        faust::Reverb.output1 -> Gain.input1;
+
+        Gain.output0 -> audioOut0;
+        Gain.output1 -> audioOut1;   
+    }
+}

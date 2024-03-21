@@ -1,0 +1,14 @@
+{
+    "CmajorVersion": 1,
+    "ID": "grame.cmajor.FaustCmajor",
+    "version": "1.0",
+    "name": "FaustCmajor",
+    "description": "Cmajor example",
+    "category": "synth",
+    "manufacturer": "GRAME",
+    "website": "https://faust.grame.fr",
+    "isInstrument": false,
+    "source": [
+        "test.cmajor"
+    ]
+}
