@@ -80,7 +80,7 @@ Coding conventions have to be known when using Faust code in a Cmajor program:
 - each Faust DSP file will be compiled as a `processor` inside the `namespace faust {...}`, which name will be the DSP filename itself. So a `foo.dsp` file will be compiled as a `processor foo {...}` block of code.
 - labels used in button, sliders, nentries... will be compiled as input events, to be used in the graph. So a `hslider("freq", 200, 200, 1000, 0.1)` will be converted as a `event freq ....` line of Cmajor code. 
 - audio inputs/outputs in the Faust processor are generated as `input0/input1...inputN` and `output0/output1...outputN`.
-- Faust .dsp filed can directly be used, but an "hybrid" [Faust/Cmajor file format](cmajor-caust hybrid file) combining Cmajor and Faust code in a same file can also be used.
+- Faust .dsp filed can directly be used, but an "hybrid" [Faust/Cmajor file format](#cmajor-faust-hybrid-file) combining Cmajor and Faust code in a same file can also be used.
 
 Here is a block of connection code combining an `addSynth` and `stereoEcho` processors compiled from Faust DSP `addSynth.dsp` and `stereoEcho.dsp` files with a Cmajor coded `ClassicRingtone` processor.
 
