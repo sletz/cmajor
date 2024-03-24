@@ -139,8 +139,9 @@ An *hybrid* Faust/Cmajor file format combining Cmajor and Faust code in a same f
 The following example combines:
 
 - an `Osc` Faust block with *freq (using an 'osc_freq' alias)* and *vol* controllers
+- a `Reverb` Faust block
 - a `Gain` Cmajor processor with a *volume* controller
-- a `Sequence` graph connecting the Faust osc in the Cmajor gain and exposing the three controllers
+- a `Sequence` graph connecting the Faust osc in the Faust Reverb, then in the Cmajor gain and exposing the three controllers
 
  ```
 // Faust processors
