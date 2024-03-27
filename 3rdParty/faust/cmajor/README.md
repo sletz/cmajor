@@ -7,7 +7,7 @@ The `cmajor.js` file loads the Emscripten generated files and defines the export
 
 - `getLibFaustVersion()` returns the libfaust version
 - `compile(dsp_name, dsp_content, argv)` compiles a Faust DSP program as a string in a Cmajor code as a string
-- `getErrorMessage` returns error message in case of compilation error
+- `getErrorMessage()` returns the error message in case of compilation error
 
 An HTML `cmajor.html` test file shows how to use the API.
 
