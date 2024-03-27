@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <H2><center>Cmajor test: the compiled code is displayed in the console</center></H2>
+</head>
+
+<body>
+    <script type="text/javascript" src="libfaust-wasm.js"></script>
+    <script type="text/javascript" src="cmajor.js"></script>
+
+    <script type="text/javascript">
+
+        async function Test() {
+
+            // Load the Faust module
+            let module = await FaustModule();
+
+            // Create the Cmajor compiler
+            let cmajor = new CmajorCompiler(module);
+
+            // Print the libfaust version
+            console.log("Faust version", cmajor.getLibFaustVersion());
+
+            // Compile self-contained Faust DSP code in Cmajor
+            var dsp_code1 = "random = +(12345)~*(1103515245); noise = random/2147483647.0; process = noise;";
+            var cmajor_code1 = cmajor.compile("Noise", dsp_code1, "");
+            console.log(cmajor_code1);
+
+            // Compile a Faust DSP code using libraries in Cmajor
+            var dsp_code2 = "import(\"stdfaust.lib\"); process = os.osc(440);";
+            var cmajor_code2 = cmajor.compile("Osc", dsp_code2, []);
+            console.log(cmajor_code2);
+
+            // Compile an invadid Faust DSP code using libraries in Cmajor
+            var dsp_code3 = "process = os.osc(440);";
+            var cmajor_code3 = cmajor.compile("Osc", dsp_code3, []);
+            console.log(cmajor_code3);
+
+            // Print the error
+            console.log(cmajor.getErrorMessage());
+        }
+
+        Test();
+
+    </script>
+</body>
+
+</html>
