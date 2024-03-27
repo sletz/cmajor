@@ -212,6 +212,11 @@ graph Sequence [[main]]
     }
 }
 ```
+
+#### Libfaust in JS/Webassembly
+
+See the libfaust library compiled in JS/WebAssembly with [a wrapper to compile a Faust DSP program in Cmajor](3rdParty/faust/cmajor/cmajor.html)
+
 ----
 
 All content is copyright 2023 [Cmajor Software Ltd](https://cmajor.dev) unless marked otherwise.
