@@ -53,18 +53,32 @@ class CmajorCompiler {
 
     /**
      * Compiles a FAUST program with specified parameters.
-     * 
-     * @param {string} dsp_name - The name of the DSP program.
-     * @param {string} dsp_content - The FAUST program code.
-     * @param {string} argv - Additional arguments for the compiler as a string.
-     * @returns {string|null} The compiled program, or null if compilation fails.
-     */
+    * 
+    * @param {string} dsp_name - The name of the DSP program to compile.
+    * @param {string} dsp_content - The content of the DSP program.
+    * @param {string} argv - Additional arguments for the compilation process.
+    * @returns {Object|null} An object containing the contents of the compiled .cmajor and .json files,
+    *                        or null if the compilation fails or an error occurs.
+    * 
+    * The return object has the following structure if successful:
+    * {
+    *      cmajor: string, // The content of the compiled .cmajor file
+    *      json: string    // The content of the compiled .json file
+    * }
+    */
     compile(dsp_name, dsp_content, argv) {
         try {
             // Customize the compilation arguments
-            argv = argv + "-lang cmajor-hybrid -I libraries -cn " + dsp_name + " -o foo.cmajor";
+            argv = `${argv}-lang cmajor-hybrid -json -I libraries -cn ${dsp_name} -o ${dsp_name}.cmajor`;
             const res = this.fCompiler.generateAuxFiles(dsp_name, dsp_content, argv);
-            return (res) ? this.fFS.readFile("foo.cmajor", { encoding: "utf8" }) : null;
+            if (res) {
+                return {
+                    cmajor: this.fFS.readFile(`${dsp_name}.cmajor`, { encoding: "utf8" }),
+                    json: this.fFS.readFile(`${dsp_name}.json`, { encoding: "utf8" })
+                };
+            } else {
+                return null;
+            }
         } catch (e) {
             // Enhanced error handling to provide more detailed feedback
             this.fErrorMessage = this.fCompiler.getErrorAfterException() || e.toString();
