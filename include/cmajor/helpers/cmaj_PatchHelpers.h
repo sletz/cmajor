@@ -39,7 +39,9 @@
 #include <optional>
 #include <unordered_map>
 
+// For Faust related code
 #include <map>
+#include <iostream>
 #include "libfaust-box-c.h"
 
 >>>>>>> 6b4ee4a (Add Cmajor/Faust in a same file hybrid model.)
