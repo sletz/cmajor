@@ -69,8 +69,10 @@ class CmajorCompiler {
     compile(dsp_name, dsp_content, argv) {
         try {
             // Customize the compilation arguments
-            argv = `${argv}-lang cmajor-hybrid -json -I libraries -cn ${dsp_name} -o ${dsp_name}.cmajor`;
-            const res = this.fCompiler.generateAuxFiles(dsp_name, dsp_content, argv);
+            const baseArgs = `-lang cmajor-hybrid -json -I libraries`;
+            const auxArgs = argv !== "" ? `${argv} ` : ""; // Notice the space after `${argv}`
+            const command = `${baseArgs} ${auxArgs}-cn ${dsp_name} -o ${dsp_name}.cmajor`;
+            const res = this.fCompiler.generateAuxFiles(dsp_name, dsp_content, command);
             if (res) {
                 return {
                     cmajor: this.fFS.readFile(`${dsp_name}.cmajor`, { encoding: "utf8" }),
