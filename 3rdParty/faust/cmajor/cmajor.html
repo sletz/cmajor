@@ -26,6 +26,7 @@
             console.log("Faust version", cmajor.getLibFaustVersion());
 
             // Compile self-contained Faust DSP code in Cmajor
+            console.log("Example 1");
             let dsp_code1 = "random = +(12345)~*(1103515245); noise = random/2147483647.0; process = noise;";
             let res1 = cmajor.compile("Noise", dsp_code1, "");
             if (res1) {
@@ -37,6 +38,7 @@
             }
 
             // Compile a Faust DSP code using libraries in Cmajor
+            console.log("Example 2");
             let dsp_code2 = "import(\"stdfaust.lib\"); process = os.osc(440);";
             let res2 = cmajor.compile("Osc", dsp_code2, "");
             if (res2) {
@@ -46,13 +48,26 @@
                 // Print the error
                 console.log(cmajor.getErrorMessage());
             }
-
-            // Compile an invadid Faust DSP code using libraries in Cmajor
-            let dsp_code3 = "process = os.osc(440);";
-            let res3 = cmajor.compile("Osc", dsp_code3, "");
+            
+            // Compile a Faust DSP code using libraries in Cmajor and additional options
+            console.log("Example 3");
+            let dsp_code3 = "import(\"stdfaust.lib\"); process = os.osc(vslider(\"freq\", 200, 200, 2000, 0.1));";
+            let res3 = cmajor.compile("Osc", dsp_code3, "-mcd 0");
             if (res3) {
                 console.log(res3.cmajor);
                 console.log(res3.json);
+            } else {
+                // Print the error
+                console.log(cmajor.getErrorMessage());
+            }
+
+            // Compile an invadid Faust DSP code using libraries in Cmajor
+            console.log("Example 4");
+            let dsp_code4 = "process = os.osc(440);";
+            let res4 = cmajor.compile("Osc", dsp_code4, "");
+            if (res4) {
+                console.log(res4.cmajor);
+                console.log(res4.json);
             } else {
                 // Print the error
                 console.log(cmajor.getErrorMessage());
