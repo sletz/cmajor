@@ -30,6 +30,11 @@
 #include "../API/cmaj_Program.h"
 #include "../API/cmaj_ExternalVariables.h"
 
+// For Faust related code
+#include <map>
+#include <iostream>
+#include "libfaust-box-c.h"
+
 namespace cmaj
 {
 
@@ -330,6 +335,114 @@ inline bool PatchManifest::reload()
 
     throw std::runtime_error ("The patch file did not contain a valid JSON object");
 }
+    
+
+// =======================
+// Faust <=> Cmajor hack
+// =======================
+
+inline std::string faust2Cmajor(const std::string& name, const std::string& file)
+{
+    createLibContext();
+    {
+        char error_msg[4096];
+        std::string cmajor_source;
+        const char* argv[] = { "-cn", name.c_str() };
+        
+        // Create the box
+        int inputs = 0;
+        int outputs = 0;
+        Box box = CDSPToBoxes("FaustDSP", file.c_str(), 2, argv, &inputs, &outputs, error_msg);
+        if (!box) {
+            std::cerr << error_msg;
+            goto end;
+        }
+    
+        // Compile it to Cmajor
+        cmajor_source = CcreateSourceFromBoxes("FaustDSP", box, "cmajor-hybrid", 2, argv, error_msg);
+        std::cout << "CMajor: " << cmajor_source << std::endl;
+        
+        end:
+        destroyLibContext();
+        return cmajor_source;
+    }
+}
+
+inline std::map <std::string, std::string> extractFaustBlocks(std::istream& in, std::stringstream& res_file)
+{
+    std::string line;
+    std::stringstream faust_block;
+    bool is_faust_block = false;
+    int brackets = 0;
+    std::map <std::string, std::string> faust_blocks;     // name, code
+    std::map <std::string, std::string>::iterator cur_faust_block;
+
+    while (getline(in, line)) {
+        
+        std::stringstream line_reader(line);
+        std::string token1, token2, token3;
+        
+        line_reader >> token1;
+        line_reader >> token2;
+        line_reader >> token3;
+        
+        if (is_faust_block) {
+                // End of block
+            if ((token1 == "}") && (--brackets == 0)) {
+                is_faust_block = false;
+                cur_faust_block->second = faust_block.str();
+                faust_block.str("");
+                    // Start of block (or could be on the previous line)
+            } else if (token1 == "{") {
+                brackets++;
+                continue;
+            } else {
+                faust_block << line << "\n";
+            }
+            continue;
+        } else {
+            is_faust_block = (token1 == "faust" && token2 != "");
+            if (is_faust_block) {
+                if (token3 == "{") brackets++;
+                faust_blocks[token2] = "";
+                cur_faust_block = faust_blocks.find(token2);
+            }
+        }
+        
+        // Keep the lines of Cmajor file
+        if (!is_faust_block) res_file << line << std::endl;
+    }
+
+    return faust_blocks;
+}
+
+inline std::string parseCmajorFile(const std::string& input)
+{
+    std::stringstream reader(input.c_str());
+
+    // Open Cmajor output stream
+    std::stringstream output_file;
+
+    // Extract the Faust blocks and returns the input file without them
+    std::stringstream cmajor_file;
+    std::map<std::string, std::string> faust_blocks = extractFaustBlocks(reader, cmajor_file);
+
+    // Write all Faust blocks translated to Cmajor
+    for (const auto& it : faust_blocks) {
+        std::string block = faust2Cmajor(it.first, it.second);
+        output_file << block;
+    }
+
+    // Write the Cmajor part
+    output_file << cmajor_file.str();
+    return output_file.str();
+}
+
+inline bool endWith(const std::string& str, const std::string& suffix)
+{
+    size_t i = str.rfind(suffix);
+    return (i != std::string::npos) && (i == (str.length() - suffix.length()));
+}
 
 inline std::optional<std::string> PatchManifest::readFileContent (const std::string& file) const
 {
@@ -345,9 +458,17 @@ inline std::optional<std::string> PatchManifest::readFileContent (const std::str
                 std::string result;
                 result.resize (static_cast<std::string::size_type> (fileSize));
                 stream->seekg (0);
-
-                if (stream->read (reinterpret_cast<std::ifstream::char_type*> (result.data()), static_cast<std::streamsize> (fileSize)))
-                    return result;
+                if (stream->read (reinterpret_cast<std::ifstream::char_type*> (result.data()), static_cast<std::streamsize> (fileSize))) {
+                    if (endWith(file, ".dsp")) {
+                            // Pure Faust dsp
+                        return faust2Cmajor(file.substr(0, file.find('.')), result);
+                    } else if (endWith(file, ".cmajor")) {
+                            // Possibly hybrid Faust/Cmajor file
+                        return parseCmajorFile(result);
+                    } else {
+                        return result;
+                    }
+                }
             }
         }
         catch (...) {}
