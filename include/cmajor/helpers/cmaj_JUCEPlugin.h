@@ -969,7 +969,9 @@ protected:
             {
                 patchWebView->setActive (true);
                 patchWebView->update (derivePatchViewSize (owner));
-                patchWebViewHolder->setSize ((int) patchWebView->width, (int) patchWebView->height);
+
+                patchWebViewHolder->setSize (owner.lastEditorWidth > 0 ? owner.lastEditorWidth : (int) patchWebView->width,
+                                             owner.lastEditorHeight > 0 ? owner.lastEditorHeight : (int) patchWebView->height);
 
                 setResizable (patchWebView->resizable, false);
 
