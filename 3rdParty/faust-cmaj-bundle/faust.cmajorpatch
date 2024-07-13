@@ -1,0 +1,18 @@
+{
+    "CmajorVersion": 1,
+    "ID": "com.your_name.your_patch_ID",
+    "version": "1.0",
+    "name": "FaustIntegration",
+    "description": "FaustIntegration",
+    "category": "generator",
+    "manufacturer": "Your Company Goes Here",
+    "isInstrument": false,
+    "sourceTransformer": "transformFaust.js",
+    "source": [
+        "HelloReverb.cmajor",
+        "HelloWorld.cmajor",
+        "reverb.dsp",
+        "echo.dsp",
+        "voice.dsp"
+    ]
+}
