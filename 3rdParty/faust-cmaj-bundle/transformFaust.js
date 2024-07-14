@@ -126,7 +126,7 @@ class CmajorCompiler {
     compile(dsp_name, dsp_content, argv) {
         try {
             // Customize the compilation arguments
-            const baseArgs = `-lang cmajor-hybrid -json -I libraries`;
+            const baseArgs = `-lang cmajor-hybrid -json`;
             const auxArgs = argv !== "" ? `${argv} ` : ""; // Notice the space after `${argv}`
             const command = `${baseArgs} ${auxArgs}-cn ${dsp_name} -o ${dsp_name}.cmajor`;
             const res = this.fCompiler.generateAuxFiles(dsp_name, dsp_content, command);
@@ -172,6 +172,7 @@ class SouceTransformer {
     transform(filename, contents) {
         if (filename.endsWith(".dsp")) {
             let prefix = filename.substr(0, filename.length - 4);
+            console.log("Faust library version: " + this.cmajor.getLibFaustVersion());
             let { cmajor, json } = this.cmajor.compile(prefix, contents, "");
             // Parse the JSON UI to generate the input events
             JSONParser.printInputs(json);
