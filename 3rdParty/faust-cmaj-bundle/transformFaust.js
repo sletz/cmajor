@@ -121,7 +121,9 @@ class CmajorCompiler {
      * @param {string} dsp_name - The name of the DSP program.
      * @param {string} dsp_content - The FAUST program code.
      * @param {string} argv - Additional arguments for the compiler as a string.
-     * @returns {string|null} The compiled program, or null if compilation fails.
+     * @returns {Object|null} The compiled program files, or null if compilation fails.
+     * @returns {string} return.cmajor - The compiled Cmajor file content.
+     * @returns {string} return.json - The compiled JSON file content.
      */
     compile(dsp_name, dsp_content, argv) {
         try {
@@ -129,16 +131,11 @@ class CmajorCompiler {
             const baseArgs = `-lang cmajor-hybrid -json`;
             const auxArgs = argv !== "" ? `${argv} ` : ""; // Notice the space after `${argv}`
             const command = `${baseArgs} ${auxArgs}-cn ${dsp_name} -o ${dsp_name}.cmajor`;
-            const res = this.fCompiler.generateAuxFiles(dsp_name, dsp_content, command);
-            if (res) {
-                return {
-                    cmajor: this.fFS.readFile(`${dsp_name}.cmajor`, { encoding: "utf8" }),
-                    json: this.fFS.readFile(`${dsp_name}.json`, { encoding: "utf8" })
-                };
-            } else {
-                return null;
-            }
-
+            this.fCompiler.generateAuxFiles(dsp_name, dsp_content, command);
+            return {
+                cmajor: this.fFS.readFile(`${dsp_name}.cmajor`, { encoding: "utf8" }),
+                json: this.fFS.readFile(`${dsp_name}.json`, { encoding: "utf8" })
+            };
         } catch (e) {
             // Enhanced error handling to provide more detailed feedback
             this.fErrorMessage = this.fCompiler.getErrorAfterException() || e.toString();
@@ -173,10 +170,15 @@ class SouceTransformer {
         if (filename.endsWith(".dsp")) {
             let prefix = filename.substr(0, filename.length - 4);
             console.log("Faust library version: " + this.cmajor.getLibFaustVersion());
-            let { cmajor, json } = this.cmajor.compile(prefix, contents, "");
+            let res = this.cmajor.compile(prefix, contents, "");
             // Parse the JSON UI to generate the input events
-            JSONParser.printInputs(json);
-            return cmajor;
+            if (res) {
+                JSONParser.printInputs(res.json);
+                return res.cmajor;
+            } else {
+                console.error(this.cmajor.getErrorMessage());
+                return contents;
+            }
         }
         // console.log(contents);
         return contents;
