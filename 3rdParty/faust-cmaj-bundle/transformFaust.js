@@ -117,14 +117,19 @@ class CmajorCompiler {
 
     /**
      * Compiles a FAUST program with specified parameters.
-     *
-     * @param {string} dsp_name - The name of the DSP program.
-     * @param {string} dsp_content - The FAUST program code.
-     * @param {string} argv - Additional arguments for the compiler as a string.
-     * @returns {Object|null} The compiled program files, or null if compilation fails.
-     * @returns {string} return.cmajor - The compiled Cmajor file content.
-     * @returns {string} return.json - The compiled JSON file content.
-     */
+    * 
+    * @param {string} dsp_name - The name of the DSP program to compile.
+    * @param {string} dsp_content - The content of the DSP program.
+    * @param {string} argv - Additional arguments for the compilation process.
+    * @returns {Object|null} An object containing the contents of the compiled .cmajor and .json files,
+    *                        or null if the compilation fails or an error occurs.
+    * 
+    * The return object has the following structure if successful:
+    * {
+    *      cmajor: string, // The content of the compiled .cmajor file
+    *      json: string    // The content of the compiled .json file
+    * }
+    */
     compile(dsp_name, dsp_content, argv) {
         try {
             // Customize the compilation arguments
