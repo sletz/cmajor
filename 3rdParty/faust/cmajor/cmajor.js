@@ -69,18 +69,14 @@ class CmajorCompiler {
     compile(dsp_name, dsp_content, argv) {
         try {
             // Customize the compilation arguments
-            const baseArgs = `-lang cmajor-hybrid -json -I libraries`;
+            const baseArgs = `-lang cmajor-hybrid -json`;
             const auxArgs = argv !== "" ? `${argv} ` : ""; // Notice the space after `${argv}`
             const command = `${baseArgs} ${auxArgs}-cn ${dsp_name} -o ${dsp_name}.cmajor`;
-            const res = this.fCompiler.generateAuxFiles(dsp_name, dsp_content, command);
-            if (res) {
-                return {
-                    cmajor: this.fFS.readFile(`${dsp_name}.cmajor`, { encoding: "utf8" }),
-                    json: this.fFS.readFile(`${dsp_name}.json`, { encoding: "utf8" })
-                };
-            } else {
-                return null;
-            }
+            this.fCompiler.generateAuxFiles(dsp_name, dsp_content, command);
+            return {
+                cmajor: this.fFS.readFile(`${dsp_name}.cmajor`, { encoding: "utf8" }),
+                json: this.fFS.readFile(`${dsp_name}.json`, { encoding: "utf8" })
+            };
         } catch (e) {
             // Enhanced error handling to provide more detailed feedback
             this.fErrorMessage = this.fCompiler.getErrorAfterException() || e.toString();
